@@ -22,9 +22,11 @@ void ofApp::setup() {
     sideCam.lookAt(glm::vec3(0, 0, 0));
     sideCam.setNearClip(.1);   
 
-    gui.add(slider_intensity[0].setup("intensity1", 1, 0, 15));
-    gui.add(slider_intensity[1].setup("intensity2", 2.5, 0, 15));
-    gui.add(slider_intensity[2].setup("intensity3", 1, 0, 15));
+    gui.add(slider_intensity[0].setup("Intensity 1", 1, 0, 15));
+    gui.add(slider_intensity[1].setup("Intensity 2", 2.5, 0, 15));
+    gui.add(slider_intensity[2].setup("Intensity 3", 1, 0, 15));
+    gui.add(slider_intensity[3].setup("Area Light Intensity", 1, 0, 15));
+
 
     gui.add(power.setup("power", 1000, 10, 10000));
     // floor plane
@@ -50,11 +52,18 @@ void ofApp::setup() {
     for (int i = 0; i < amountOfPlanes; i++)
         scene[scene.size() - i - 1]->hasTexture = true;
 
-    // program is set at a max of three light objects
     light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0])); // to the right
-    light_scene.push_back(new Light(glm::vec3(-4, 3, 4), 1.5)); // to the left
+    //light_scene.push_back(new Light(glm::vec3(-4, 3, 4), 1.5)); // to the left
     //light_scene.push_back(new Light(glm::vec3(0, 3, 4), slider_intensity[1])); // directly above
-    light_scene.push_back(new Light(glm::vec3(0, 1, 8), slider_intensity[2])); // above renderCam
+    //light_scene.push_back(new Light(glm::vec3(0, 1, 8), slider_intensity[2])); // above renderCam
+
+  
+    AreaLight areaLight1(glm::vec3(0, 12, 4), slider_intensity[3], 2, 4, glm::vec3(0, 1, 0));
+
+
+    for (int i = 0; i < areaLight1.amountOfLights; i++)
+        light_scene.push_back(areaLight1.lightObjects[i]);
+    
 
     image.allocate(imageWidth, imageHeight, OF_IMAGE_COLOR);
     image.setColor(ofColor::black);

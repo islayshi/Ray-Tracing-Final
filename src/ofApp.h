@@ -64,6 +64,8 @@ public:
 	ofImage* imageTexture;
 };
 
+
+
 class Light : public SceneObject {
 public:
 	Light(glm::vec3 p, float i) { position = p; intensity = i; }
@@ -79,6 +81,68 @@ public:
 	float intensity;
 	float radius = 0.1;
 };
+
+class AreaLight : public Light {
+private:
+	double lightIntesityDivider = 1000000;
+
+public:
+	AreaLight(glm::vec3 p, float i, int l, int w, glm::vec3 n) : Light(p, i /= lightIntesityDivider)
+	{
+		amountOfLights = l * w;
+		length = l;
+		width = w;
+		normal = n;
+
+		for (int x = 0; x < length; x++)
+		{
+			for (int y = 0; y < width; y++)
+			{
+				glm::vec3 pt;
+
+				if (normal == glm::vec3(0, 1, 0) || normal == glm::vec3(0, -1, 0)) // floor plane
+				{
+					pt.x = x;
+					pt.y = p.y;
+					pt.z = y;
+				}
+				else if (normal == glm::vec3(0, 0, 1) || normal == glm::vec3(0, 0, -1)) // back wall plane
+				{
+					pt.x = x;
+					pt.y = y;
+					pt.z = p.z;
+				}
+				else if (normal == glm::vec3(1, 0, 0) || normal == glm::vec3(-1, 0, 0)) // side wall plane
+				{
+					pt.x = p.x;
+					pt.y = x;
+					pt.z = y;
+				}
+				else
+				{
+					cout << "Issue creating area light (Incorrect Normal)" << endl;
+				}
+
+				cout << "Light Object Created" << endl;
+				lightObjects.push_back(new Light(pt, i));
+
+			}
+		}
+	}
+
+	void draw() {
+
+		ofDrawPlane(position, length, width);
+
+	}
+	
+	int amountOfLights;
+	vector <Light*> lightObjects;
+	int length, width, freq;
+	glm::vec3 normal;
+
+};
+
 
 //  General purpose sphere  (assume parametric)
 //
@@ -270,7 +334,7 @@ class ofApp : public ofBaseApp{
 		vector<SceneObject *> scene;
 		vector<Light *> light_scene;
 
-		ofxFloatSlider slider_intensity[3];
+		ofxFloatSlider slider_intensity[10];
 
 		ofxFloatSlider power;
 
@@ -279,8 +343,8 @@ class ofApp : public ofBaseApp{
 		ofImage imageTextures[10];
 
 		// 6:4 ratio
-		const int imageWidth = 1200; 
-		const int imageHeight = 800; 
+		const int imageWidth = 300; 
+		const int imageHeight = 200; 
 
 		const int amountOfPlanes = 4;
 
