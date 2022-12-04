@@ -36,7 +36,6 @@ void ofApp::setup() {
     imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Textures\\block\\cobblestone.png");
 
 
-
     scene.push_back(new Sphere(glm::vec3(0, 0.5, 0), 1.5, ofColor::blue));
     scene.push_back(new Sphere(glm::vec3(0, 1, 3.5), 0.7, ofColor::green));
     scene.push_back(new Sphere(glm::vec3(1.7, 0.5, 1.2), 1.3, ofColor::red));
@@ -62,8 +61,10 @@ void ofApp::setup() {
 
 
     for (int i = 0; i < areaLight1.amountOfLights; i++)
+    {
         light_scene.push_back(areaLight1.lightObjects[i]);
-    
+        cout << areaLight1.lightIntesityDivider << endl;
+    }
 
     image.allocate(imageWidth, imageHeight, OF_IMAGE_COLOR);
     image.setColor(ofColor::black);
@@ -73,7 +74,7 @@ void ofApp::setup() {
 void ofApp::update() {
     for (int i = 0; i < light_scene.size(); i++)
     {
-        light_scene[i]->intensity = slider_intensity[i];
+        light_scene[i]->intensity = slider_intensity[i] / light_scene[i]->lightIntesityDivider;
     }
   
 }

@@ -68,7 +68,7 @@ public:
 
 class Light : public SceneObject {
 public:
-	Light(glm::vec3 p, float i) { position = p; intensity = i; }
+	Light(glm::vec3 p, float i, float lightDivider = 1) { position = p; intensity = i/ lightDivider; lightIntesityDivider = lightDivider; }
 	Light() {}
 
 	void draw() {
@@ -80,14 +80,17 @@ public:
 	glm::vec3 position;
 	float intensity;
 	float radius = 0.1;
+	float lightIntesityDivider = 1;
 };
 
 class AreaLight : public Light {
-private:
-	double lightIntesityDivider = 1000000;
-
 public:
-	AreaLight(glm::vec3 p, float i, int l, int w, glm::vec3 n) : Light(p, i /= lightIntesityDivider)
+	int amountOfLights;
+	vector <Light*> lightObjects;
+	int length, width, freq;
+	glm::vec3 normal;
+
+	AreaLight(glm::vec3 p, float i, int l, int w, glm::vec3 n) : Light(p, i, 5000)
 	{
 		amountOfLights = l * w;
 		length = l;
@@ -136,10 +139,6 @@ public:
 
 	}
 	
-	int amountOfLights;
-	vector <Light*> lightObjects;
-	int length, width, freq;
-	glm::vec3 normal;
 
 };
 
