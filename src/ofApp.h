@@ -66,83 +66,7 @@ public:
 
 
 
-class Light : public SceneObject {
-public:
-	Light(glm::vec3 p, float i, float lightDivider = 1) { position = p; intensity = i/ lightDivider; lightIntesityDivider = lightDivider; }
 
-	void draw() {
-		ofDrawSphere(position, radius);
-	}
-	bool intersect(const Ray& ray, glm::vec3& point, glm::vec3& normal) {
-		return (glm::intersectRaySphere(ray.p, ray.d, position, radius, point, normal));
-	}
-	glm::vec3 position;
-	float intensity;
-	float radius = 0.1;
-	float lightIntesityDivider = 1;
-};
-
-class AreaLight : public Light {
-private:
-	float intensityDivider = 1.5;
-
-public:
-	int amountOfLights;
-	vector <Light*> lightObjects;
-	int length, width, freq;
-	glm::vec3 normal;
-
-	AreaLight(glm::vec3 p, float i, int l, int w, glm::vec3 n) : Light(p, i, intensityDivider)
-	{
-		amountOfLights = l * w;
-		length = l;
-		width = w;
-		normal = n;
-
-		for (int x = 0; x < length; x++)
-		{
-			for (int y = 0; y < width; y++)
-			{
-				glm::vec3 pt;
-
-				if (normal == glm::vec3(0, 1, 0) || normal == glm::vec3(0, -1, 0)) // floor plane
-				{
-					pt.x = x;
-					pt.y = p.y;
-					pt.z = y;
-				}
-				else if (normal == glm::vec3(0, 0, 1) || normal == glm::vec3(0, 0, -1)) // back wall plane
-				{
-					pt.x = x;
-					pt.y = y;
-					pt.z = p.z;
-				}
-				else if (normal == glm::vec3(1, 0, 0) || normal == glm::vec3(-1, 0, 0)) // side wall plane
-				{
-					pt.x = p.x;
-					pt.y = x;
-					pt.z = y;
-				}
-				else
-				{
-					cout << "Issue creating area light (Incorrect Normal)" << endl;
-				}
-
-				cout << "Light Object Created" << endl;
-				lightObjects.push_back(new Light(pt, i, intensityDivider));
-
-			}
-		}
-	}
-
-	void draw() {
-
-		ofDrawPlane(position, length, width);
-
-	}
-	
-
-};
 
 
 //  General purpose sphere  (assume parametric)
@@ -289,7 +213,90 @@ public:
 	ViewPlane view;          // The camera viewplane, this is the view that we will render 
 };
 
-  
+class Light : public SceneObject {
+public:
+	Light(glm::vec3 p, float i, float lightDivider = 1)
+	{
+		position = p;
+		intensity = i / lightDivider;
+		lightIntesityDivider = lightDivider;
+		selectionSphere = Sphere(p, radius);
+	}
+
+	void draw() {
+		ofDrawSphere(position, radius);
+	}
+	bool intersect(const Ray& ray, glm::vec3& point, glm::vec3& normal) {
+		return (glm::intersectRaySphere(ray.p, ray.d, position, radius, point, normal));
+	}
+	glm::vec3 position;
+	float intensity;
+	float radius = 0.1;
+	float lightIntesityDivider = 1;
+	Sphere selectionSphere;
+};
+
+class AreaLight : public Light {
+private:
+	float intensityDivider = 1.5;
+
+public:
+	int amountOfLights;
+	vector <Light*> lightObjects;
+	int length, width, freq;
+	glm::vec3 normal;
+
+	AreaLight(glm::vec3 p, float i, int l, int w, glm::vec3 n) : Light(p, i, intensityDivider)
+	{
+		amountOfLights = l * w;
+		length = l;
+		width = w;
+		normal = n;
+
+		for (int x = 0; x < length; x++)
+		{
+			for (int y = 0; y < width; y++)
+			{
+				glm::vec3 pt;
+
+				if (normal == glm::vec3(0, 1, 0) || normal == glm::vec3(0, -1, 0)) // floor plane
+				{
+					pt.x = x;
+					pt.y = p.y;
+					pt.z = y;
+				}
+				else if (normal == glm::vec3(0, 0, 1) || normal == glm::vec3(0, 0, -1)) // back wall plane
+				{
+					pt.x = x;
+					pt.y = y;
+					pt.z = p.z;
+				}
+				else if (normal == glm::vec3(1, 0, 0) || normal == glm::vec3(-1, 0, 0)) // side wall plane
+				{
+					pt.x = p.x;
+					pt.y = x;
+					pt.z = y;
+				}
+				else
+				{
+					cout << "Issue creating area light (Incorrect Normal)" << endl;
+				}
+
+				cout << "Light Object Created" << endl;
+				lightObjects.push_back(new Light(pt, i, intensityDivider));
+
+			}
+		}
+	}
+
+	void draw() {
+
+		ofDrawPlane(position, length, width);
+
+	}
+
+
+};
 
 class ofApp : public ofBaseApp{
 
@@ -348,6 +355,10 @@ class ofApp : public ofBaseApp{
 		const int imageHeight = 200; 
 
 		const int amountOfPlanes = 4;
+
+		bool selectedLight;
+
+		int lightNum = 0;
 
 		const float SHADOW_DARKENER = 1.75;
 };

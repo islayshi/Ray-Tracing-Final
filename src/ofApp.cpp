@@ -1,10 +1,10 @@
 #include "ofApp.h"
-#include "ofApp.h"
 #include "ofxGui.h"
 #include <glm/gtx/intersect.hpp>
 #include <string>
 #include <algorithm>    
 #include <iomanip>
+#include <glm/gtx/intersect.hpp>
 
 using namespace std;
 
@@ -17,10 +17,6 @@ void ofApp::setup() {
     theCam = &mainCam;
     mainCam.setDistance(50);
     mainCam.setNearClip(.1);
-
-    sideCam.setPosition(glm::vec3(50, 5, 50));
-    sideCam.lookAt(glm::vec3(0, 0, 0));
-    sideCam.setNearClip(.1);   
 
     gui.add(slider_intensity[0].setup("Intensity 1", 1, 0, 15));
     gui.add(slider_intensity[1].setup("Intensity 2", 2.5, 0, 15));
@@ -123,21 +119,20 @@ void ofApp::keyPressed(int key) {
     case OF_KEY_F1:
         theCam = &mainCam;
         break;
-    case OF_KEY_F2:
-        theCam = &sideCam;
-        break;
     case OF_KEY_F3:
         theCam = &previewCam;
         previewCam.setPosition(renderCam.position);
         break;
-    case OF_KEY_CONTROL:
+    case 'r':
         rayTrace();
         break;
-    case OF_KEY_TAB:
+    case 's':
         image.saveImage(filePath, OF_IMAGE_QUALITY_BEST);
         cout << "Image sucessfully saved to " << filePath << endl;
         break;
-
+    case 'c':
+        if (mainCam.getMouseInputEnabled()) mainCam.disableMouseInput();
+        else mainCam.enableMouseInput();
         break;
 
     default:
@@ -157,11 +152,54 @@ void ofApp::mouseMoved(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
+    if (button == 0 && selectedLight) // left click
+    {
+        glm::vec3 zaxis = theCam->getZAxis();
 
+        glm::vec3 screen3DPt = theCam->screenToWorld(glm::vec3(x, y, 0));
+        glm::vec3 rayOrigin = theCam->getPosition();
+
+        Ray r = Ray(rayOrigin, glm::normalize(screen3DPt - rayOrigin));
+        // if user tries to select both at the same time, only spotlight is moved
+        if (selectedLight)
+        {
+            glm::vec3 releasedPosition = r.evalPoint(distance(rayOrigin, light_scene[lightNum]->position));
+            cout << "Light" << lightNum << " moved to " << releasedPosition << endl;
+            light_scene[lightNum]->position = releasedPosition;
+            light_scene[lightNum]->selectionSphere.position = releasedPosition;
+            draw();
+        }
+
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
+    if (button == 0) // left click
+    {
+        glm::vec3 screen3DPt = theCam->screenToWorld(glm::vec3(x, y, 0));
+        glm::vec3 rayOrigin = theCam->getPosition();
+        glm::vec3 rayDir = glm::normalize(screen3DPt - rayOrigin);
+        glm::vec3 intersectNormal, intersectPt;
+
+        int counter = 0;
+        for (Light* lights : light_scene)
+        {
+            bool lightIntersect = glm::intersectRaySphere(rayOrigin, rayDir, lights->selectionSphere.position, lights->selectionSphere.radius,
+                intersectPt, intersectNormal);
+
+            if (lightIntersect) {
+                cout << "hit light " << counter << endl;
+                selectedLight = true;
+                lightNum = counter;
+                break;
+            }
+            else {
+                selectedLight = false;
+            }
+            counter++;
+        }
+    }
 
 }
 
