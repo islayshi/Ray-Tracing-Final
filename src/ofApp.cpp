@@ -51,7 +51,7 @@ void ofApp::setup() {
     for (int i = 0; i < amountOfPlanes; i++)
         scene[scene.size() - i - 1]->hasTexture = true;
 
-    light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0])); // to the right
+    //light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0])); // to the right
     //light_scene.push_back(new Light(glm::vec3(-4, 3, 4), 1.5)); // to the left
     //light_scene.push_back(new Light(glm::vec3(0, 3, 4), slider_intensity[1])); // directly above
     //light_scene.push_back(new Light(glm::vec3(0, 1, 8), slider_intensity[2])); // above renderCam
@@ -63,7 +63,11 @@ void ofApp::setup() {
     for (int i = 0; i < areaLight1.amountOfLights; i++)
     {
         light_scene.push_back(areaLight1.lightObjects[i]);
-        cout << areaLight1.lightIntesityDivider << endl;
+    }
+
+    for (Light* l : light_scene)
+    {
+        cout << l->lightIntesityDivider << endl;
     }
 
     image.allocate(imageWidth, imageHeight, OF_IMAGE_COLOR);
