@@ -96,7 +96,7 @@ class Mesh : public SceneObject {
 
 class Plane : public SceneObject {
 public:
-	Plane(ofImage* i, glm::vec3 p, glm::vec3 n, ofColor diffuse = ofColor::green, float w = 20, float h = 20) {
+	Plane(glm::vec3 p, glm::vec3 n, ofColor diffuse = ofColor::green, ofImage* i = nullptr, float w = 20, float h = 20) {
 		position = p; normal = n;
 		width = w;
 		height = h;
@@ -215,13 +215,15 @@ public:
 
 class Light : public SceneObject {
 public:
-	Light(glm::vec3 p, float i, float lightDivider = 1)
+	Light(glm::vec3 p, float i, float lightDivider = 1, bool areaLightC = false)
 	{
 		position = p;
 		intensity = i / lightDivider;
 		lightIntesityDivider = lightDivider;
 		selectionSphere = Sphere(p, radius);
+		areaLightChild = areaLightC;
 	}
+	Light() { position = glm::vec3(0,0,0); intensity = 0; areaLightChild = false; }
 
 	void draw() {
 		ofDrawSphere(position, radius);
@@ -234,7 +236,9 @@ public:
 	float radius = 0.1;
 	float lightIntesityDivider = 1;
 	Sphere selectionSphere;
+	bool areaLightChild;
 };
+
 
 class AreaLight : public Light {
 private:
@@ -243,8 +247,10 @@ private:
 public:
 	int amountOfLights;
 	vector <Light*> lightObjects;
-	int length, width, freq;
+	int length, width;
 	glm::vec3 normal;
+	glm::vec3 center;
+	Plane* selectionPlane;
 
 	AreaLight(glm::vec3 p, float i, int l, int w, glm::vec3 n) : Light(p, i, intensityDivider)
 	{
@@ -252,6 +258,15 @@ public:
 		length = l;
 		width = w;
 		normal = n;
+
+		center = position;
+
+		if (normal == glm::vec3(0, 1, 0) || normal == glm::vec3(0, -1, 0)) // floor plane
+		{
+			center.x += (length-1)/2.0;
+			center.z += (width-1)/2.0;
+		}
+		selectionPlane = new Plane(center, normal, ofColor::green, nullptr, length - 1, width - 1);
 
 		for (int x = 0; x < length; x++)
 		{
@@ -261,38 +276,38 @@ public:
 
 				if (normal == glm::vec3(0, 1, 0) || normal == glm::vec3(0, -1, 0)) // floor plane
 				{
-					pt.x = x;
+					pt.x = p.x + x;
 					pt.y = p.y;
-					pt.z = y;
+					pt.z = p.z + y;
 				}
 				else if (normal == glm::vec3(0, 0, 1) || normal == glm::vec3(0, 0, -1)) // back wall plane
 				{
-					pt.x = x;
-					pt.y = y;
+					pt.x = p.x + x;
+					pt.y = p.y + y;
 					pt.z = p.z;
 				}
 				else if (normal == glm::vec3(1, 0, 0) || normal == glm::vec3(-1, 0, 0)) // side wall plane
 				{
 					pt.x = p.x;
-					pt.y = x;
-					pt.z = y;
+					pt.y = p.y + x;
+					pt.z = p.z + y;
 				}
 				else
 				{
 					cout << "Issue creating area light (Incorrect Normal)" << endl;
 				}
-
+				
 				cout << "Light Object Created" << endl;
-				lightObjects.push_back(new Light(pt, i, intensityDivider));
+				cout << pt << endl;
+				lightObjects.push_back(new Light(pt, i, intensityDivider, true));
 
 			}
 		}
 	}
+	AreaLight() : Light() { length = 0; width = 0; amountOfLights = 0; }
 
 	void draw() {
-
-		ofDrawPlane(position, length, width);
-
+		selectionPlane->draw();
 	}
 
 
@@ -350,6 +365,8 @@ class ofApp : public ofBaseApp{
 
 		ofImage imageTextures[10];
 
+		AreaLight* areaLight1;
+
 		// 6:4 ratio
 		const int imageWidth = 300; 
 		const int imageHeight = 200; 
@@ -357,6 +374,7 @@ class ofApp : public ofBaseApp{
 		const int amountOfPlanes = 4;
 
 		bool selectedLight;
+		bool selectedAreaLight;
 
 		int lightNum = 0;
 

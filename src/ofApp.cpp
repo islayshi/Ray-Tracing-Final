@@ -21,7 +21,7 @@ void ofApp::setup() {
     gui.add(slider_intensity[0].setup("Intensity 1", 1, 0, 15));
     gui.add(slider_intensity[1].setup("Intensity 2", 2.5, 0, 15));
     gui.add(slider_intensity[2].setup("Intensity 3", 1, 0, 15));
-    gui.add(slider_intensity[3].setup("Area Light Intensity", 1, 0, 15));
+    gui.add(slider_intensity[3].setup("Area Light Intensity", 4, 0, 15));
 
 
     gui.add(power.setup("power", 1000, 10, 10000));
@@ -38,27 +38,27 @@ void ofApp::setup() {
 
     // planes
 
-    scene.push_back(new Plane(&imageTextures[0], glm::vec3(0, -2, 0), glm::vec3(0, 1, 0), ofColor::gray)); // floor
-    scene.push_back(new Plane(&imageTextures[1], glm::vec3(0, -1, -3), glm::vec3(0, 0, 1), ofColor::gray)); // back wall
+    scene.push_back(new Plane(glm::vec3(0, -2, 0), glm::vec3(0, 1, 0), ofColor::gray, &imageTextures[0])); // floor
+    scene.push_back(new Plane(glm::vec3(0, -1, -3), glm::vec3(0, 0, 1), ofColor::gray, &imageTextures[1])); // back wall
 
-    scene.push_back(new Plane(&imageTextures[1], glm::vec3(-6, -1, 0), glm::vec3(1, 0, 0), ofColor::gray)); // left wall
-    scene.push_back(new Plane(&imageTextures[1], glm::vec3(6, -1, 0), glm::vec3(-1, 0, 0), ofColor::gray)); // right wall
+    scene.push_back(new Plane(glm::vec3(-6, -1, 0), glm::vec3(1, 0, 0), ofColor::gray, &imageTextures[1])); // left wall
+    scene.push_back(new Plane(glm::vec3(6, -1, 0), glm::vec3(-1, 0, 0), ofColor::gray, &imageTextures[1])); // right wall
 
     for (int i = 0; i < amountOfPlanes; i++)
         scene[scene.size() - i - 1]->hasTexture = true;
 
-    //light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0])); // to the right
+    light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0])); // to the right
     //light_scene.push_back(new Light(glm::vec3(-4, 3, 4), 1.5)); // to the left
     //light_scene.push_back(new Light(glm::vec3(0, 3, 4), slider_intensity[1])); // directly above
     //light_scene.push_back(new Light(glm::vec3(0, 1, 8), slider_intensity[2])); // above renderCam
 
   
-    AreaLight areaLight1(glm::vec3(0, 12, 4), slider_intensity[3], 2, 4, glm::vec3(0, 1, 0));
+    areaLight1 = new AreaLight(glm::vec3(2, 12, 4), slider_intensity[3], 2, 4, glm::vec3(0, -1, 0));
 
 
-    for (int i = 0; i < areaLight1.amountOfLights; i++)
+    for (int i = 0; i < areaLight1->amountOfLights; i++)
     {
-        light_scene.push_back(areaLight1.lightObjects[i]);
+        light_scene.push_back(areaLight1->lightObjects[i]);
     }
 
     for (Light* l : light_scene)
@@ -99,6 +99,10 @@ void ofApp::draw() {
     {
         l->draw();
     }
+
+
+    ofSetColor(ofColor::cyan);
+    areaLight1->draw();
 
     ofSetColor(ofColor::white);
 
@@ -152,7 +156,7 @@ void ofApp::mouseMoved(int x, int y) {
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-    if (button == 0 && selectedLight) // left click
+    if (button == 0 && (selectedLight || selectedAreaLight)) // left click
     {
         glm::vec3 zaxis = theCam->getZAxis();
 
@@ -160,13 +164,32 @@ void ofApp::mouseDragged(int x, int y, int button) {
         glm::vec3 rayOrigin = theCam->getPosition();
 
         Ray r = Ray(rayOrigin, glm::normalize(screen3DPt - rayOrigin));
-        // if user tries to select both at the same time, only spotlight is moved
+        // if user tries to select both at the same time, only first light object is moved
         if (selectedLight)
         {
             glm::vec3 releasedPosition = r.evalPoint(distance(rayOrigin, light_scene[lightNum]->position));
             cout << "Light" << lightNum << " moved to " << releasedPosition << endl;
             light_scene[lightNum]->position = releasedPosition;
             light_scene[lightNum]->selectionSphere.position = releasedPosition;
+            draw();
+        }
+        else if (selectedAreaLight)
+        {
+            glm::vec3 releasedPosition = r.evalPoint(distance(rayOrigin, light_scene[lightNum]->position));
+            glm::vec3 translate = releasedPosition - light_scene[lightNum]->position;
+            cout << "Area Light" << " moved to " << releasedPosition << endl;
+
+            for (Light* lights : light_scene)
+            {
+                if (lights->areaLightChild)
+                {
+                    lights->position += translate;
+                    lights->selectionSphere.position += translate;
+                }
+                
+            }
+
+            areaLight1->selectionPlane->position += translate;
             draw();
         }
 
@@ -181,6 +204,7 @@ void ofApp::mousePressed(int x, int y, int button) {
         glm::vec3 rayOrigin = theCam->getPosition();
         glm::vec3 rayDir = glm::normalize(screen3DPt - rayOrigin);
         glm::vec3 intersectNormal, intersectPt;
+        float intersectDistance = 0;
 
         int counter = 0;
         for (Light* lights : light_scene)
@@ -188,17 +212,25 @@ void ofApp::mousePressed(int x, int y, int button) {
             bool lightIntersect = glm::intersectRaySphere(rayOrigin, rayDir, lights->selectionSphere.position, lights->selectionSphere.radius,
                 intersectPt, intersectNormal);
 
-            if (lightIntersect) {
+            if (lightIntersect and !lights->areaLightChild) {
                 cout << "hit light " << counter << endl;
                 selectedLight = true;
                 lightNum = counter;
                 break;
             }
+            else if (lightIntersect and lights->areaLightChild) {
+                cout << "hit area light " << endl;
+                selectedAreaLight = true;
+                lightNum = counter;
+                break;
+            }
             else {
                 selectedLight = false;
+                selectedAreaLight = false;
             }
             counter++;
         }
+
     }
 
 }
