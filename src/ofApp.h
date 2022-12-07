@@ -47,7 +47,7 @@ class SceneObject {
 public: 
 	virtual void draw() = 0;    // pure virtual funcs - must be overloaded
 	virtual bool intersect(const Ray &ray, glm::vec3 &point, glm::vec3 &normal) { cout << "SceneObject::intersect" << endl; return false; }
-	virtual ofColor textureLookupColor(glm::vec3 p) // no textures
+	virtual ofColor textureLookupColor(glm::vec3 p, string texture = "") // no textures
 	{
 		return diffuseColor;
 	}	
@@ -62,6 +62,7 @@ public:
 
 	bool hasTexture = false;
 	ofImage* imageTexture;
+	ofImage* imageNormalTexture;
 };
 
 
@@ -96,12 +97,13 @@ class Mesh : public SceneObject {
 
 class Plane : public SceneObject {
 public:
-	Plane(glm::vec3 p, glm::vec3 n, ofColor diffuse = ofColor::green, ofImage* i = nullptr, float w = 20, float h = 20) {
+	Plane(glm::vec3 p, glm::vec3 n, ofColor diffuse = ofColor::green, ofImage* i = nullptr, ofImage* i_n = nullptr, float w = 20, float h = 20) {
 		position = p; normal = n;
 		width = w;
 		height = h;
 		diffuseColor = diffuse;
 		imageTexture = i;
+		imageNormalTexture = i_n;
 		if (normal == glm::vec3(0, 1, 0))
 			plane.rotateDeg(-90, 1, 0, 0);
 		else if (normal == glm::vec3(0, -1, 0))
@@ -136,7 +138,7 @@ public:
 	glm::vec2 xyScale(glm::vec2 xy);
 
 	// (u,v) -> (i, j)
-	ofColor textureLookupColor(glm::vec3 p);
+	ofColor textureLookupColor(glm::vec3 p, string texture = "");
 	
 
 	ofPlanePrimitive plane;
@@ -266,7 +268,7 @@ public:
 			center.x += (length-1)/2.0;
 			center.z += (width-1)/2.0;
 		}
-		selectionPlane = new Plane(center, normal, ofColor::green, nullptr, length - 1, width - 1);
+		selectionPlane = new Plane(center, normal, ofColor::green, nullptr, nullptr, length - 1, width - 1);
 
 		for (int x = 0; x < length; x++)
 		{
@@ -364,12 +366,13 @@ class ofApp : public ofBaseApp{
 		ofxPanel gui;
 
 		ofImage imageTextures[10];
+		ofImage imageNormalTextures[10];
 
 		AreaLight* areaLight1;
 
 		// 6:4 ratio
-		const int imageWidth = 300; 
-		const int imageHeight = 200; 
+		const int imageWidth = 1200; 
+		const int imageHeight = 800; 
 
 		const int amountOfPlanes = 4;
 

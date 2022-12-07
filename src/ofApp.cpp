@@ -19,17 +19,18 @@ void ofApp::setup() {
     mainCam.setNearClip(.1);
 
     gui.add(slider_intensity[0].setup("Intensity 1", 1, 0, 15));
-    gui.add(slider_intensity[1].setup("Intensity 2", 2.5, 0, 15));
+    gui.add(slider_intensity[1].setup("Intensity 2", 1, 0, 15));
     gui.add(slider_intensity[2].setup("Intensity 3", 1, 0, 15));
-    gui.add(slider_intensity[3].setup("Area Light Intensity", 4, 0, 15));
+    gui.add(slider_intensity[3].setup("Area Light Intensity", 2, 0, 15));
 
 
     gui.add(power.setup("power", 1000, 10, 10000));
     // floor plane
-    imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Textures\\block\\oak_planks.png");
-
+    imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\GitHub\\Ray-Tracing-Final\\Minecraft_Bump_Textures\\blocks\\planks_oak.png");
+    imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\GitHub\\Ray-Tracing-Final\\Minecraft_Bump_Textures\\blocks\\planks_oak_n.png");
     // wall planes
-    imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Textures\\block\\cobblestone.png");
+    imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\GitHub\\Ray-Tracing-Final\\Minecraft_Bump_Textures\\blocks\\cobblestone.png");
+    imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\GitHub\\Ray-Tracing-Final\\Minecraft_Bump_Textures\\blocks\\cobblestone_n.png");
 
 
     scene.push_back(new Sphere(glm::vec3(0, 0.5, 0), 1.5, ofColor::blue));
@@ -38,16 +39,16 @@ void ofApp::setup() {
 
     // planes
 
-    scene.push_back(new Plane(glm::vec3(0, -2, 0), glm::vec3(0, 1, 0), ofColor::gray, &imageTextures[0])); // floor
-    scene.push_back(new Plane(glm::vec3(0, -1, -3), glm::vec3(0, 0, 1), ofColor::gray, &imageTextures[1])); // back wall
+    scene.push_back(new Plane(glm::vec3(0, -2, 0), glm::vec3(0, 1, 0), ofColor::gray, &imageTextures[0], &imageNormalTextures[0])); // floor
+    scene.push_back(new Plane(glm::vec3(0, -1, -3), glm::vec3(0, 0, 1), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // back wall
 
-    scene.push_back(new Plane(glm::vec3(-6, -1, 0), glm::vec3(1, 0, 0), ofColor::gray, &imageTextures[1])); // left wall
-    scene.push_back(new Plane(glm::vec3(6, -1, 0), glm::vec3(-1, 0, 0), ofColor::gray, &imageTextures[1])); // right wall
+    scene.push_back(new Plane(glm::vec3(-6, -1, 0), glm::vec3(1, 0, 0), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // left wall
+    scene.push_back(new Plane(glm::vec3(6, -1, 0), glm::vec3(-1, 0, 0), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // right wall
 
     for (int i = 0; i < amountOfPlanes; i++)
         scene[scene.size() - i - 1]->hasTexture = true;
 
-    light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0])); // to the right
+    light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0], 1.3)); // to the right
     //light_scene.push_back(new Light(glm::vec3(-4, 3, 4), 1.5)); // to the left
     //light_scene.push_back(new Light(glm::vec3(0, 3, 4), slider_intensity[1])); // directly above
     //light_scene.push_back(new Light(glm::vec3(0, 1, 8), slider_intensity[2])); // above renderCam
@@ -286,7 +287,7 @@ void ofApp::rayTrace()
             for (int s = 0; s < scene.size(); s++)
             {
                 ofColor finalColor = 0;
-                glm::vec3 intersectPt, normal;
+                glm::vec3 intersectPt, normal, textureNormal;
 
                 hitSurface = scene[s]->intersect(camRayPos, intersectPt, normal);
                 if (!hitSurface)
@@ -309,12 +310,24 @@ void ofApp::rayTrace()
                         glm::vec3 light_pos = lights->position;
                         bool shadowBlocked = false;
 
-                        for (int s2 = 0; s2 < scene.size() - amountOfPlanes; s2++) // loops through scene objects (except the 2 plane objects)
+                        for (int s2 = 0; s2 < scene.size(); s2++) // loops through scene objects 
                         {
                             glm::vec3 intersectPt2, normal2;
 
                             Ray shadRay = Ray(intersectPt + (0.001 * normal), glm::normalize(light_pos - intersectPt));
                             shadowBlocked = scene[s2]->intersect(shadRay, intersectPt2, normal2);
+
+                            if (s2 >= scene.size() - amountOfPlanes) // if it's a plane
+                            {
+                                ofColor normalTextureColor = scene[s]->textureLookupColor(intersectPt, "n");
+                                float red, green, blue;
+
+                                red = ofMap(normalTextureColor.r, -1, 1, 0, 255);
+                                green = ofMap(normalTextureColor.g, -1, 1, 0, 255);
+                                blue = ofMap(normalTextureColor.b, 0, -1, 128, 255);
+                                
+                                normal = glm::vec3(red, green, blue);
+                            }
 
                             ofColor sceneColor = scene[s]->textureLookupColor(intersectPt);
                             finalColor += sceneColor * lights->intensity / 30; // ambience color
@@ -373,7 +386,7 @@ glm::vec2 Plane::toObjectSpace(glm::vec3 p)
 glm::vec2 Plane::xyScale(glm::vec2 xy)
 {
     glm::vec2 uv;
-    int numOfTiles = 5;
+    int numOfTiles = 1;
 
     uv[0] = ofMap(xy[0], -10, 10, 0, numOfTiles);
     uv[1] = ofMap(xy[1], -10, 10, 0, numOfTiles);
@@ -383,8 +396,13 @@ glm::vec2 Plane::xyScale(glm::vec2 xy)
 }
 
 // (u,v) -> (i, j)
-ofColor Plane::textureLookupColor(glm::vec3 p)
+ofColor Plane::textureLookupColor(glm::vec3 p, string texture)
 {
+    ofImage* iTexture = imageTexture;
+
+    if (texture == "n")
+        iTexture = imageNormalTexture;
+
     if (!hasTexture)
     {
         return diffuseColor;
@@ -394,8 +412,8 @@ ofColor Plane::textureLookupColor(glm::vec3 p)
     glm::vec2 xy = toObjectSpace(p);
     glm::vec2 uv = xyScale(xy);
 
-    float bPwidth = imageTexture->getWidth();
-    float bPheight = imageTexture->getHeight();
+    float bPwidth = iTexture->getWidth();
+    float bPheight = iTexture->getHeight();
 
     int i = round((uv[0] * bPwidth) - 0.5);
     int j = round((uv[1] * bPheight) - 0.5);
@@ -404,7 +422,7 @@ ofColor Plane::textureLookupColor(glm::vec3 p)
 
     j = fmod(j, bPheight);
 
-    return imageTexture->getColor(i, j); 
+    return iTexture->getColor(i, j);
 
 }
 
