@@ -18,10 +18,10 @@ void ofApp::setup() {
     mainCam.setDistance(50);
     mainCam.setNearClip(.1);
 
-    gui.add(slider_intensity[0].setup("Intensity 1", 1, 0, 15));
+    gui.add(slider_intensity[0].setup("Intensity 1", 0.25, 0, 15));
     gui.add(slider_intensity[1].setup("Intensity 2", 1, 0, 15));
     gui.add(slider_intensity[2].setup("Intensity 3", 1, 0, 15));
-    gui.add(slider_intensity[3].setup("Area Light Intensity", 2, 0, 15));
+    gui.add(slider_intensity[3].setup("Area Light Intensity", 4, 0, 15));
 
 
     gui.add(power.setup("power", 1000, 10, 10000));
@@ -40,7 +40,7 @@ void ofApp::setup() {
     // planes
 
     scene.push_back(new Plane(glm::vec3(0, -2, 0), glm::vec3(0, 1, 0), ofColor::gray, &imageTextures[0], &imageNormalTextures[0])); // floor
-    scene.push_back(new Plane(glm::vec3(0, -1, -3), glm::vec3(0, 0, 1), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // back wall
+    scene.push_back(new Plane(glm::vec3(0, -1, -3), glm::vec3(0, 0, -1), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // back wall
 
     scene.push_back(new Plane(glm::vec3(-6, -1, 0), glm::vec3(1, 0, 0), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // left wall
     scene.push_back(new Plane(glm::vec3(6, -1, 0), glm::vec3(-1, 0, 0), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // right wall
@@ -49,6 +49,8 @@ void ofApp::setup() {
         scene[scene.size() - i - 1]->hasTexture = true;
 
     light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0], 1.3)); // to the right
+    light_scene.push_back(new Light(glm::vec3(0.5, 4.5, -1.5), slider_intensity[0], 1.3)); // in the back
+
     //light_scene.push_back(new Light(glm::vec3(-4, 3, 4), 1.5)); // to the left
     //light_scene.push_back(new Light(glm::vec3(0, 3, 4), slider_intensity[1])); // directly above
     //light_scene.push_back(new Light(glm::vec3(0, 1, 8), slider_intensity[2])); // above renderCam
@@ -314,20 +316,23 @@ void ofApp::rayTrace()
                         {
                             glm::vec3 intersectPt2, normal2;
 
+                            if (s >= scene.size() - amountOfPlanes) // if it's a plane
+                            {
+                                if (scene[s]->imageNormalTexture != nullptr)
+                                {
+                                    ofColor normalTextureColor = scene[s]->textureLookupColor(intersectPt, "n");
+                                    float red, green, blue;
+
+                                    red = ofMap(normalTextureColor.r, 0, 255, -1, 1);
+                                    green = ofMap(normalTextureColor.g, 0, 255, -1, 1);
+                                    blue = ofMap(normalTextureColor.b, 128, 255, 0, -1);
+
+                                    normal = glm::vec3(red, green, -blue);
+                                }
+                            }
+
                             Ray shadRay = Ray(intersectPt + (0.001 * normal), glm::normalize(light_pos - intersectPt));
                             shadowBlocked = scene[s2]->intersect(shadRay, intersectPt2, normal2);
-
-                            if (s2 >= scene.size() - amountOfPlanes) // if it's a plane
-                            {
-                                ofColor normalTextureColor = scene[s]->textureLookupColor(intersectPt, "n");
-                                float red, green, blue;
-
-                                red = ofMap(normalTextureColor.r, -1, 1, 0, 255);
-                                green = ofMap(normalTextureColor.g, -1, 1, 0, 255);
-                                blue = ofMap(normalTextureColor.b, 0, -1, 128, 255);
-                                
-                                normal = glm::vec3(red, green, blue);
-                            }
 
                             ofColor sceneColor = scene[s]->textureLookupColor(intersectPt);
                             finalColor += sceneColor * lights->intensity / 30; // ambience color
@@ -356,13 +361,13 @@ glm::vec2 Plane::toObjectSpace(glm::vec3 p)
 {
     glm::vec2 xy;
 
-    if (normal == glm::vec3(0, 1, 0)) // floor plane
+    if (normal == glm::vec3(0, 1, 0) || normal == (glm::vec3(0, -1, 0))) // floor plane
     {
         // xy = x,z
         xy[0] = p[0] - position[0];
         xy[1] = p[2] - position[2];
     }
-    else if (normal == glm::vec3(0, 0, 1)) // back wall plane
+    else if (normal == glm::vec3(0, 0, 1) || normal == (glm::vec3(0, 0, -1))) // back wall plane
     {
         // xy = x,y
         xy[0] = p[0] - position[0];
@@ -386,7 +391,7 @@ glm::vec2 Plane::toObjectSpace(glm::vec3 p)
 glm::vec2 Plane::xyScale(glm::vec2 xy)
 {
     glm::vec2 uv;
-    int numOfTiles = 1;
+    int numOfTiles = 5;
 
     uv[0] = ofMap(xy[0], -10, 10, 0, numOfTiles);
     uv[1] = ofMap(xy[1], -10, 10, 0, numOfTiles);
