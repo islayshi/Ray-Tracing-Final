@@ -18,38 +18,58 @@ void ofApp::setup() {
     mainCam.setDistance(50);
     mainCam.setNearClip(.1);
 
-    gui.add(slider_intensity[0].setup("Intensity 1", 0.25, 0, 15));
-    gui.add(slider_intensity[1].setup("Intensity 2", 1, 0, 15));
-    gui.add(slider_intensity[2].setup("Intensity 3", 1, 0, 15));
-    gui.add(slider_intensity[3].setup("Area Light Intensity", 4, 0, 15));
+    gui.add(slider_intensity[0].setup("Intensity 1", 0.5, 0, 15));
+    gui.add(slider_intensity[1].setup("Intensity 2", 0.25, 0, 15));
+    gui.add(slider_intensity[2].setup("Intensity 3", 0.5, 0, 15));
+    gui.add(slider_intensity[3].setup("Area Light Intensity", 1.25, 0, 15));
 
 
     gui.add(power.setup("power", 1000, 10, 10000));
     // floor plane
-    imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\GitHub\\Ray-Tracing-Final\\Minecraft_Bump_Textures\\blocks\\planks_oak.png");
-    imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\GitHub\\Ray-Tracing-Final\\Minecraft_Bump_Textures\\blocks\\planks_oak_n.png");
-    // wall planes
-    imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\GitHub\\Ray-Tracing-Final\\Minecraft_Bump_Textures\\blocks\\cobblestone.png");
-    imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\GitHub\\Ray-Tracing-Final\\Minecraft_Bump_Textures\\blocks\\cobblestone_n.png");
+    //imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\planks_oak.png");
+    //imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\planks_oak_n.png");
+    //imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\brick.png");
+    //imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\brick_n.png");
+    imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\log_big_oak_top.png");
+    imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\log_big_oak_top_n.png");
 
-
+    // side wall planes
+    //imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\cobblestone.png");
+    //imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\cobblestone_n.png");
+    //imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\stonebrick.png");
+    //imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\stonebrick_n.png");
+    imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\end_bricks.png");
+    imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\end_bricks_n.png");
+    
+    // back wall plane
+    //imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\diamond_block.png");
+    //imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\diamond_block_n.png");
+    //imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\bookshelf.png");
+    //imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\bookshelf_n.png");
+    imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\prismarine_dark.png");
+    imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\prismarine_dark_n.png");
     scene.push_back(new Sphere(glm::vec3(0, 0.5, 0), 1.5, ofColor::blue));
     scene.push_back(new Sphere(glm::vec3(0, 1, 3.5), 0.7, ofColor::green));
     scene.push_back(new Sphere(glm::vec3(1.7, 0.5, 1.2), 1.3, ofColor::red));
 
     // planes
 
-    scene.push_back(new Plane(glm::vec3(0, -2, 0), glm::vec3(0, 1, 0), ofColor::gray, &imageTextures[0], &imageNormalTextures[0])); // floor
-    scene.push_back(new Plane(glm::vec3(0, -1, -3), glm::vec3(0, 0, -1), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // back wall
+    Plane* floor_plane = new Plane(glm::vec3(0, -2, 0), glm::vec3(0, 1, 0), ofColor::gray, &imageTextures[0], &imageNormalTextures[0]);
+    Plane* left_wall_plane = new Plane(glm::vec3(-6, -1, 0), glm::vec3(1, 0, 0), ofColor::gray, &imageTextures[1], &imageNormalTextures[1]);
+    Plane* right_wall_plane = new Plane(glm::vec3(6, -1, 0), glm::vec3(-1, 0, 0), ofColor::gray, &imageTextures[1], &imageNormalTextures[1]);
+    Plane* back_plane = new Plane(glm::vec3(0, -1, -3), glm::vec3(0, 0, 1), ofColor::gray, &imageTextures[2], &imageNormalTextures[2]);
 
-    scene.push_back(new Plane(glm::vec3(-6, -1, 0), glm::vec3(1, 0, 0), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // left wall
-    scene.push_back(new Plane(glm::vec3(6, -1, 0), glm::vec3(-1, 0, 0), ofColor::gray, &imageTextures[1], &imageNormalTextures[1])); // right wall
+    scene.push_back(floor_plane); 
+    scene.push_back(back_plane); 
+    scene.push_back(left_wall_plane); 
+    scene.push_back(right_wall_plane);
 
     for (int i = 0; i < amountOfPlanes; i++)
         scene[scene.size() - i - 1]->hasTexture = true;
 
-    light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0], 1.3)); // to the right
-    light_scene.push_back(new Light(glm::vec3(0.5, 4.5, -1.5), slider_intensity[0], 1.3)); // in the back
+    light_scene.push_back(new Light(glm::vec3(4, 3, 3), slider_intensity[0], 1.75)); // to the right
+    light_scene.push_back(new Light(glm::vec3(0.5, 4.5, -1.5), slider_intensity[1], 1.75)); // in the back
+    light_scene.push_back(new Light(glm::vec3(-4, 3, 4), slider_intensity[2], 1.75)); // in the back
 
     //light_scene.push_back(new Light(glm::vec3(-4, 3, 4), 1.5)); // to the left
     //light_scene.push_back(new Light(glm::vec3(0, 3, 4), slider_intensity[1])); // directly above
@@ -75,9 +95,12 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
+    int light_counter = 0;
     for (int i = 0; i < light_scene.size(); i++)
     {
-        light_scene[i]->intensity = slider_intensity[i] / light_scene[i]->lightIntesityDivider;
+        light_scene[i]->intensity = slider_intensity[light_counter] / light_scene[i]->lightIntesityDivider;
+        if (!light_scene[i]->areaLightChild)
+            light_counter += 1;
     }
   
 }
@@ -327,7 +350,8 @@ void ofApp::rayTrace()
                                     green = ofMap(normalTextureColor.g, 0, 255, -1, 1);
                                     blue = ofMap(normalTextureColor.b, 128, 255, 0, -1);
 
-                                    normal = glm::vec3(red, green, -blue);
+                                    normal += glm::vec3(red, green, -blue);
+                                    normal = glm::normalize(normal);
                                 }
                             }
 
@@ -335,13 +359,17 @@ void ofApp::rayTrace()
                             shadowBlocked = scene[s2]->intersect(shadRay, intersectPt2, normal2);
 
                             ofColor sceneColor = scene[s]->textureLookupColor(intersectPt);
-                            finalColor += sceneColor * lights->intensity / 30; // ambience color
+                            finalColor += sceneColor * lights->intensity / 50; // ambience color
                             finalColor += lambert(intersectPt, normal, sceneColor);
                             finalColor += phong(intersectPt, normal, sceneColor, sceneColor, power);
 
-                            if (shadowBlocked && lights->intensity != 0)
+                            if (shadowBlocked && lights->intensity != 0 && s < scene.size() - amountOfPlanes)
                             {
                                 finalColor /= SHADOW_DARKENER; // darkens the shadows
+                            }
+                            else if (shadowBlocked && lights->intensity != 0 && s >= scene.size() - amountOfPlanes)
+                            {
+                                finalColor /= TEXTURE_SHADOW_DARKENER; // darkens the texture shadows
                             }
                         }
                     }
@@ -412,7 +440,6 @@ ofColor Plane::textureLookupColor(glm::vec3 p, string texture)
     {
         return diffuseColor;
     }
-    //cout << "in" << endl;
 
     glm::vec2 xy = toObjectSpace(p);
     glm::vec2 uv = xyScale(xy);

@@ -371,8 +371,8 @@ class ofApp : public ofBaseApp{
 		AreaLight* areaLight1;
 
 		// 6:4 ratio
-		const int imageWidth = 300; 
-		const int imageHeight = 200; 
+		const int imageWidth = 1200; 
+		const int imageHeight = 800; 
 
 		const int amountOfPlanes = 4;
 
@@ -381,6 +381,8 @@ class ofApp : public ofBaseApp{
 
 		int lightNum = 0;
 
-		const float SHADOW_DARKENER = 1.75;
+		const float SHADOW_DARKENER = 1.5;
+		const float TEXTURE_SHADOW_DARKENER = 1.1;
+
 };
  
