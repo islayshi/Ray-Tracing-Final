@@ -25,7 +25,8 @@ void ofApp::setup() {
 
 
     gui.add(power.setup("power", 1000, 10, 10000));
-    // floor plane
+    // floor plane textures
+    // 
     //imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\planks_oak.png");
     //imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\planks_oak_n.png");
     //imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\brick.png");
@@ -33,7 +34,8 @@ void ofApp::setup() {
     imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\log_big_oak_top.png");
     imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\log_big_oak_top_n.png");
 
-    // side wall planes
+    // side wall planes textures
+    // 
     //imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\cobblestone.png");
     //imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\cobblestone_n.png");
     //imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\stonebrick.png");
@@ -41,7 +43,8 @@ void ofApp::setup() {
     imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\end_bricks.png");
     imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\end_bricks_n.png");
     
-    // back wall plane
+    // back wall plane textures
+    // 
     //imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\diamond_block.png");
     //imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\diamond_block_n.png");
     //imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\bookshelf.png");
@@ -341,7 +344,7 @@ void ofApp::rayTrace()
 
                             if (s >= scene.size() - amountOfPlanes) // if it's a plane
                             {
-                                if (scene[s]->imageNormalTexture != nullptr)
+                                if (scene[s]->imageNormalTexture != nullptr) // calculation for RGB normal mapping
                                 {
                                     ofColor normalTextureColor = scene[s]->textureLookupColor(intersectPt, "n");
                                     float red, green, blue;
