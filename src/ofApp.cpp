@@ -87,11 +87,6 @@ void ofApp::setup() {
         light_scene.push_back(areaLight1->lightObjects[i]);
     }
 
-    for (Light* l : light_scene)
-    {
-        cout << l->lightIntesityDivider << endl;
-    }
-
     image.allocate(imageWidth, imageHeight, OF_IMAGE_COLOR);
     image.setColor(ofColor::black);
 }
