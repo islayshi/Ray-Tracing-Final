@@ -371,8 +371,8 @@ class ofApp : public ofBaseApp{
 		AreaLight* areaLight1;
 
 		// 6:4 ratio
-		const int imageWidth = 300; 
-		const int imageHeight = 200; 
+		const int imageWidth = 1200; 
+		const int imageHeight = 800; 
 
 		const int amountOfPlanes = 4;
 

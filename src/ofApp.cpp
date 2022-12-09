@@ -27,30 +27,30 @@ void ofApp::setup() {
     gui.add(power.setup("power", 1000, 10, 10000));
     // floor plane textures
     // 
-    //imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\planks_oak.png");
-    //imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\planks_oak_n.png");
+    imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\planks_oak.png");
+    imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\planks_oak_n.png");
     //imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\brick.png");
     //imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\brick_n.png");
-    imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\log_big_oak_top.png");
-    imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\log_big_oak_top_n.png");
+    //imageTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\log_big_oak_top.png");
+    //imageNormalTextures[0].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\log_big_oak_top_n.png");
 
     // side wall planes textures
     // 
-    //imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\cobblestone.png");
-    //imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\cobblestone_n.png");
-    //imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\stonebrick.png");
-    //imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\stonebrick_n.png");
-    imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\end_bricks.png");
-    imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\end_bricks_n.png");
+    imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\cobblestone.png");
+    imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\cobblestone_n.png");
+    //imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\bookshelf.png");
+    //imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\bookshelf_n.png");
+    //imageTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\end_bricks.png");
+    //imageNormalTextures[1].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\end_bricks_n.png");
     
     // back wall plane textures
     // 
-    //imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\diamond_block.png");
-    //imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\diamond_block_n.png");
+    imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\diamond_block.png");
+    imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\diamond_block_n.png");
     //imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\bookshelf.png");
     //imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\bookshelf_n.png");
-    imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\prismarine_dark.png");
-    imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\prismarine_dark_n.png");
+    //imageTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\prismarine_dark.png");
+    //imageNormalTextures[2].load("C:\\Users\\ngjwo\\Documents\\of_v0.11.2_vs2017_release\\apps\\myApps\\RayTracingFinal\\Minecraft_Bump_Textures\\blocks\\prismarine_dark_n.png");
     scene.push_back(new Sphere(glm::vec3(0, 0.5, 0), 1.5, ofColor::blue));
     scene.push_back(new Sphere(glm::vec3(0, 1, 3.5), 0.7, ofColor::green));
     scene.push_back(new Sphere(glm::vec3(1.7, 0.5, 1.2), 1.3, ofColor::red));
@@ -407,8 +407,8 @@ glm::vec2 Plane::toObjectSpace(glm::vec3 p)
     else if ( normal == glm::vec3(1, 0, 0) || normal == (glm::vec3(-1 ,0 ,0))) // side wall plane
     {
         // xy = y,z
-        xy[0] = p[1] - position[1];
-        xy[1] = p[2] - position[2];
+        xy[0] = p[2] - position[2];
+        xy[1] = p[1] - position[1];
     }
     else
     {
@@ -511,40 +511,23 @@ ofColor ofApp::phong(const glm::vec3& p, const glm::vec3& norm, const ofColor di
 
 
 
-// Intersect Ray with Plane  (wrapper on glm::intersect*)
-//
-bool Plane::intersect(const Ray& ray, glm::vec3& point, glm::vec3& normalAtIntersect) {
+bool Plane::intersect(const Ray& ray, glm::vec3& point, glm::vec3&
+    normalAtIntersect) {
     float dist;
     bool insidePlane = false;
-    bool hit = glm::intersectRayPlane(ray.p, ray.d, position, this->normal, dist);
+    bool hit = glm::intersectRayPlane(ray.p, ray.d, position, this->normal,
+        dist);
     if (hit) {
         Ray r = ray;
         point = r.evalPoint(dist);
         normalAtIntersect = this->normal;
-        glm::vec2 xrange = glm::vec2(position.x - width / 2, position.x + width / 2);
-        glm::vec2 yrange = glm::vec2(position.y - width / 2, position.y + width / 2);
-        glm::vec2 zrange = glm::vec2(position.z - height / 2, position.z + height / 2);
-
-        // horizontal 
-        //
-        if (normal == glm::vec3(0, 1, 0) || normal == glm::vec3(0, -1, 0)) {
-            if (point.x < xrange[1] && point.x > xrange[0] && point.z < zrange[1] && point.z > zrange[0]) {
-                insidePlane = true;
-            }
-        }
-        // front or back
-        //
-        else if (normal == glm::vec3(0, 0, 1) || normal == glm::vec3(0, 0, -1)) {
-            if (point.x < xrange[1] && point.x > xrange[0] && point.y < yrange[1] && point.y > yrange[0]) {
-                insidePlane = true;
-            }
-        }
-        // left or right
-        //
-        else if (normal == glm::vec3(1, 0, 0) || normal == glm::vec3(-1, 0, 0)) {
-            if (point.y < yrange[1] && point.y > yrange[0] && point.z < zrange[1] && point.z > zrange[0]) {
-                insidePlane = true;
-            }
+        glm::vec2 xrange = glm::vec2(position.x - width / 2, position.x + width
+            / 2);
+        glm::vec2 zrange = glm::vec2(position.z - height / 2, position.z +
+            height / 2);
+        if (point.x < xrange[1] && point.x > xrange[0] && point.z < zrange[1]
+            && point.z > zrange[0]) {
+            insidePlane = true;
         }
     }
     return insidePlane;
